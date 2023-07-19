@@ -13,4 +13,8 @@ impl KVStore {
     pub(crate) fn put(&mut self, key: String, value: String){
         self.store.insert(key, value);
     }
+
+    pub(crate) fn get(&self, key: &str) -> Option<&String>{
+        self.store.get(key)
+    }
 }
