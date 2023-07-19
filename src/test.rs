@@ -15,4 +15,13 @@ mod tests {
         assert_eq!(kvstore.store.len(), 1);
         assert_eq!(kvstore.store.get("key"), Some(&"value".to_string()));
     }
+
+    #[test]
+    fn test_get(){
+        let mut kv_store = KVStore::new();
+        kv_store.put("key".to_string(), "value".to_string());
+        assert_eq!(kv_store.get("key"), Some(&"value".to_string()));
+        assert_eq!(kv_store.get("key2"), None);
+
+    }
 }
