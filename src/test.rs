@@ -7,4 +7,12 @@ mod tests {
         let kv_store = KVStore::new();
         assert_eq!(kv_store.store.len(), 0);
     }
+
+    #[test]
+    fn test_put(){
+        let mut kvstore = KVStore::new();
+        kvstore.put("key".to_string(), "value".to_string());
+        assert_eq!(kvstore.store.len(), 1);
+        assert_eq!(kvstore.store.get("key"), Some(&"value".to_string()));
+    }
 }
