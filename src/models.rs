@@ -10,4 +10,7 @@ impl KVStore {
             store: HashMap::new(),
         }
     }
+    pub(crate) fn put(&mut self, key: String, value: String){
+        self.store.insert(key, value);
+    }
 }
