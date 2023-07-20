@@ -17,4 +17,8 @@ impl KVStore {
     pub(crate) fn get(&self, key: &str) -> Option<&String>{
         self.store.get(key)
     }
+
+    pub(crate) fn delete(&mut self, key: &str)-> Option<String>{
+        self.store.remove(key)
+    }
 }

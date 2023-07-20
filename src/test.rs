@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use crate::models::KVStore;
-    use super::*;
+
     #[test]
     fn test_create_kv_store(){
         let kv_store = KVStore::new();
@@ -23,5 +23,13 @@ mod tests {
         assert_eq!(kv_store.get("key"), Some(&"value".to_string()));
         assert_eq!(kv_store.get("key2"), None);
 
+    }
+
+    #[test]
+    fn test_delete(){
+        let mut kv_store = KVStore::new();
+        kv_store.put("key".to_string(), "value".to_string());
+        assert_eq!(kv_store.delete("key"), Some("value".to_string()));
+        assert_eq!(kv_store.delete("key"), None);
     }
 }
