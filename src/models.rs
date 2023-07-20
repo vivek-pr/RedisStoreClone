@@ -8,12 +8,14 @@ use crate::node::Node;
 #[derive(PartialEq)]
 pub enum KVError{
     KeyNotFound,
+    SizeLimitReached,
 }
 
 impl std::fmt::Display for KVError{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result{
         match self{
             KVError::KeyNotFound => write!(f, "Key not found"),
+            KVError::SizeLimitReached => write!(f, "Size limit reached"),
         }
     }
 }
@@ -23,19 +25,28 @@ impl std::error::Error for KVError{}
 
 pub struct KVStore {
     pub(crate) store: HashMap<String, Value>,
+    size: usize,
+    limit: usize,
     nodes: Vec<Node>,
 }
 
 impl KVStore {
-    pub(crate) fn new(nodes: Vec<Node>) -> Self {
+    pub(crate) fn new(nodes: Vec<Node>, limit: usize) -> Self {
         KVStore {
             store: HashMap::new(),
+            size: 0,
+            limit,
             nodes,
         }
     }
-    pub(crate) fn put(&mut self, key: String, value: String, ttl: u64){
+    pub(crate) fn put(&mut self, key: String, value: String, ttl: u64) -> Result<(), KVError>{
+        if self.size >= self.limit {
+            return Err(KVError::SizeLimitReached);
+        }
+        self.size += 1;
         let value = Value::new(value, ttl);
         self.store.insert(key, value);
+        Ok(())
     }
 
     pub(crate) fn get(&self, key: &str) -> Result<&String, KVError>{
