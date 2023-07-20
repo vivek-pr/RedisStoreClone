@@ -81,10 +81,21 @@ mod tests {
     }
 
     #[test]
-    #[test]
     fn test_size_limit() {
         let mut kvstore = KVStore::new(vec![], 1);
         assert_eq!(kvstore.put("key1".to_string(), "value1".to_string(), 1), Ok(()));
         assert_eq!(kvstore.put("key2".to_string(), "value2".to_string(), 1), Err(KVError::SizeLimitReached));
+    }
+
+    #[test]
+    fn test_keys(){
+        let mut kvstore = KVStore::new(vec![], 4);
+        kvstore.put("key1".to_string(), "value1".to_string(), 1).unwrap();
+        kvstore.put("key2".to_string(), "value2".to_string(), 1).unwrap();
+        kvstore.put("key3".to_string(), "value3".to_string(), 1).unwrap();
+        let keys = kvstore.keys();
+        assert_eq!(keys.contains(&"key1".to_string()), true);
+        assert_eq!(keys.contains(&"key2".to_string()), true);
+        assert_eq!(keys.contains(&"key3".to_string()), true);
     }
 }
