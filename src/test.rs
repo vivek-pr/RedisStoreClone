@@ -2,6 +2,7 @@
 mod tests {
     use crate::models::KVStore;
 
+
     #[test]
     fn test_create_kv_store(){
         let kv_store = KVStore::new();
@@ -31,5 +32,13 @@ mod tests {
         kv_store.put("key".to_string(), "value".to_string());
         assert_eq!(kv_store.delete("key"), Some("value".to_string()));
         assert_eq!(kv_store.delete("key"), None);
+    }
+
+    #[test]
+    fn test_hash_key(){
+        let key = "key";
+        let hashed_key = crate::hasher::hash_key(key);
+        assert!(hashed_key > 0);
+
     }
 }
