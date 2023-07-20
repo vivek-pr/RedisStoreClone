@@ -68,5 +68,9 @@ impl KVStore {
         let node_index = (hashed_key % self.nodes.len() as u64) as usize;
         self.nodes.get(node_index)
     }
+
+    pub(crate) fn keys(&self) -> Vec<String>{
+        self.store.keys().cloned().collect()
+    }
 }
 
