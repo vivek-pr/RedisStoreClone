@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::models::KVStore;
+    use crate::models::{KVError, KVStore};
     use crate::node::Node;
     use std::thread;
     use std::time::Duration;
@@ -26,8 +26,8 @@ mod tests {
         let nodes = vec![Node::new(1), Node::new(2), Node::new(3)];
         let mut kv_store = KVStore::new(nodes);
         kv_store.put("key".to_string(), "value".to_string(), 200);
-        assert_eq!(kv_store.get("key"), Some(&"value".to_string()));
-        assert_eq!(kv_store.get("key2"), None);
+        assert_eq!(kv_store.get("key"), Ok(&"value".to_string()));
+        assert_eq!(kv_store.get("key2"), Err(KVError::KeyNotFound));
 
     }
 
@@ -36,8 +36,8 @@ mod tests {
         let nodes = vec![Node::new(1), Node::new(2), Node::new(3)];
         let mut kv_store = KVStore::new(nodes);
         kv_store.put("key".to_string(), "value".to_string(), 200);
-        assert_eq!(kv_store.delete("key"), Some("value".to_string()));
-        assert_eq!(kv_store.delete("key"), None);
+        assert_eq!(kv_store.get("key"), Ok(&"value".to_string()));
+        assert_eq!(kv_store.get("key2"), Err(KVError::KeyNotFound));
     }
 
     #[test]
@@ -61,8 +61,22 @@ mod tests {
         let nodes = vec![Node::new(1), Node::new(2), Node::new(3)];
         let mut kv_store = KVStore::new(nodes);
         kv_store.put("key".to_string(), "value".to_string(), 1);
-        assert_eq!(kv_store.get("key"), Some(&"value".to_string()));
+        assert_eq!(kv_store.get("key"), Ok(&"value".to_string()));
         thread::sleep(Duration::from_secs(2));
-        assert_eq!(kv_store.get("key"), None);
+        assert_eq!(kv_store.get("key"), Err(KVError::KeyNotFound));
+    }
+
+    #[test]
+    fn test_get_nonexistent_key(){
+        let nodes = vec![Node::new(1), Node::new(2), Node::new(3)];
+        let kv_store = KVStore::new(nodes);
+        assert_eq!(kv_store.get("key"), Err(KVError::KeyNotFound));
+    }
+
+    #[test]
+    fn test_delete_nonexistent_key(){
+        let nodes = vec![Node::new(1), Node::new(2), Node::new(3)];
+        let mut kv_store = KVStore::new(nodes);
+        assert_eq!(kv_store.delete("key"), Err(KVError::KeyNotFound));
     }
 }
