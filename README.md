@@ -26,7 +26,6 @@ Please read CONTRIBUTING.md for details on our code of conduct, and the process 
 
 See the open issues for a list of proposed features (and known issues).
 
-
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT) - see the LICENSE.md file for details
