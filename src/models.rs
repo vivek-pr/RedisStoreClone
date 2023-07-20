@@ -27,15 +27,17 @@ pub struct KVStore {
     pub(crate) store: HashMap<String, Value>,
     size: usize,
     limit: usize,
+    replication_factor: usize,
     nodes: Vec<Node>,
 }
 
 impl KVStore {
-    pub(crate) fn new(nodes: Vec<Node>, limit: usize) -> Self {
+    pub(crate) fn new(nodes: Vec<Node>, limit: usize, replication_factor: usize) -> Self {
         KVStore {
             store: HashMap::new(),
             size: 0,
             limit,
+            replication_factor,
             nodes,
         }
     }
