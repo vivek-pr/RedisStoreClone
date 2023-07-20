@@ -1,5 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
+#[derive(Clone)]
 pub struct Value{
     pub(crate) value: String,
     pub(crate) insertion_time: u64,

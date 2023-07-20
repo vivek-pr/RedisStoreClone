@@ -1,5 +1,6 @@
+#[derive(Clone)]
 pub struct Node{
-    id: u64,
+    pub(crate) id: u64,
 }
 
 impl Node{

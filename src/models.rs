@@ -47,7 +47,12 @@ impl KVStore {
         }
         self.size += 1;
         let value = Value::new(value, ttl);
-        self.store.insert(key, value);
+        self.store.insert(key.clone(), value.clone());
+        let nodes = self.get_next_nodes(&key);
+        for node in nodes{
+            let _res = self.send_data_to_node(node, &key, &value.value, ttl);
+        }
+
         Ok(())
     }
 
@@ -73,6 +78,33 @@ impl KVStore {
 
     pub(crate) fn keys(&self) -> Vec<String>{
         self.store.keys().cloned().collect()
+    }
+
+    fn get_next_nodes(&self, key : &str) -> Vec<&Node>{
+        let hashed_key = hash_key(key);
+        let mut node_index = (hashed_key % self.nodes.len() as u64) as usize;
+        let mut nodes = vec![];
+        for _ in 0..self.replication_factor{
+            nodes.push(self.nodes.get(node_index).unwrap());
+            node_index += 1;
+            if node_index >= self.nodes.len(){
+                node_index = 0;
+            }
+        }
+        nodes
+    }
+
+    fn send_data_to_node(&self, node: &Node, key: &str, value: &str, ttl: u64) -> Result<(), Error>{
+        // let url = format!("http://{}:{}/data", node.ip, node.port);
+        // let client = reqwest::Client::new();
+        // let mut map = HashMap::new();
+        // map.insert("key", key);
+        // map.insert("value", value);
+        // map.insert("ttl", &ttl.to_string());
+        // let _res = client.post(&url)
+        //     .json(&map)
+        //     .send()?;
+        Ok(())
     }
 }
 
