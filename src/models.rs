@@ -1,9 +1,10 @@
 use std::collections::HashMap;
+use crate::expiration::Value;
 use crate::hasher::hash_key;
 use crate::node::Node;
 
 pub struct KVStore {
-    pub(crate) store: HashMap<String, String>,
+    pub(crate) store: HashMap<String, Value>,
     nodes: Vec<Node>,
 }
 
@@ -14,16 +15,23 @@ impl KVStore {
             nodes,
         }
     }
-    pub(crate) fn put(&mut self, key: String, value: String){
+    pub(crate) fn put(&mut self, key: String, value: String, ttl: u64){
+        let value = Value::new(value, ttl);
         self.store.insert(key, value);
     }
 
     pub(crate) fn get(&self, key: &str) -> Option<&String>{
-        self.store.get(key)
+        self.store.get(key).and_then(|value| {
+            if value.has_expired(){
+                None
+            }else{
+                Some(&value.value)
+            }
+        })
     }
 
     pub(crate) fn delete(&mut self, key: &str)-> Option<String>{
-        self.store.remove(key)
+        self.store.remove(key).map(|value| value.value)
     }
 
     pub(crate) fn get_node_for_key(&self, key: &str) -> Option<&Node>{
