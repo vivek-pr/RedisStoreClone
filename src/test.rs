@@ -2,6 +2,8 @@
 mod tests {
     use crate::models::KVStore;
     use crate::node::Node;
+    use std::thread;
+    use std::time::Duration;
 
     #[test]
     fn test_create_kv_store(){
@@ -14,16 +16,16 @@ mod tests {
     fn test_put(){
         let nodes = vec![Node::new(1), Node::new(2), Node::new(3)];
         let mut kvstore = KVStore::new(nodes);
-        kvstore.put("key".to_string(), "value".to_string());
+        kvstore.put("key".to_string(), "value".to_string(), 200);
         assert_eq!(kvstore.store.len(), 1);
-        assert_eq!(kvstore.store.get("key"), Some(&"value".to_string()));
+        assert_eq!(kvstore.store.get("key").unwrap().value, "value".to_string());
     }
 
     #[test]
     fn test_get(){
         let nodes = vec![Node::new(1), Node::new(2), Node::new(3)];
         let mut kv_store = KVStore::new(nodes);
-        kv_store.put("key".to_string(), "value".to_string());
+        kv_store.put("key".to_string(), "value".to_string(), 200);
         assert_eq!(kv_store.get("key"), Some(&"value".to_string()));
         assert_eq!(kv_store.get("key2"), None);
 
@@ -33,7 +35,7 @@ mod tests {
     fn test_delete(){
         let nodes = vec![Node::new(1), Node::new(2), Node::new(3)];
         let mut kv_store = KVStore::new(nodes);
-        kv_store.put("key".to_string(), "value".to_string());
+        kv_store.put("key".to_string(), "value".to_string(), 200);
         assert_eq!(kv_store.delete("key"), Some("value".to_string()));
         assert_eq!(kv_store.delete("key"), None);
     }
@@ -52,5 +54,15 @@ mod tests {
         let kv_store = KVStore::new(nodes);
         let node = kv_store.get_node_for_key("key");
         assert!(node.is_some());
+    }
+
+    #[test]
+    fn test_ttl(){
+        let nodes = vec![Node::new(1), Node::new(2), Node::new(3)];
+        let mut kv_store = KVStore::new(nodes);
+        kv_store.put("key".to_string(), "value".to_string(), 1);
+        assert_eq!(kv_store.get("key"), Some(&"value".to_string()));
+        thread::sleep(Duration::from_secs(2));
+        assert_eq!(kv_store.get("key"), None);
     }
 }
