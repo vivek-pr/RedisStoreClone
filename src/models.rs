@@ -48,10 +48,10 @@ impl KVStore {
         self.size += 1;
         let value = Value::new(value, ttl);
         self.store.insert(key.clone(), value.clone());
-        let nodes = self.get_next_nodes(&key);
-        for node in nodes{
-            let _res = self.send_data_to_node(node, &key, &value.value, ttl);
-        }
+        // let nodes = self.get_next_nodes(&key);
+        // for node in nodes{
+        //     let _res = self.send_data_to_node(node, &key, &value.value, ttl);
+        // }
 
         Ok(())
     }
