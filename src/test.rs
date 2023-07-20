@@ -98,4 +98,14 @@ mod tests {
         assert_eq!(keys.contains(&"key2".to_string()), true);
         assert_eq!(keys.contains(&"key3".to_string()), true);
     }
+
+    #[test]
+    fn test_replication(){
+        let nodes = vec![Node::new(1), Node::new(2), Node::new(3)];
+        let mut kvstore = KVStore::new(nodes, 100, 3);
+        kvstore.put("key1".to_string(), "value1".to_string(), 1).unwrap();
+        kvstore.put("key2".to_string(), "value2".to_string(), 1).unwrap();
+        kvstore.put("key3".to_string(), "value3".to_string(), 1).unwrap();
+        assert_eq!(kvstore.store.len(), 3);
+    }
 }
